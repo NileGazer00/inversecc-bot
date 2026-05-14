@@ -9,39 +9,52 @@
   <img src="https://img.shields.io/badge/Reddit-API-FF4500?logo=reddit" alt="Reddit API">
   <img src="https://img.shields.io/badge/Sentiment-VADER-brightgreen" alt="VADER">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
-  <img src="https://img.shields.io/badge/status-active-success" alt="Status">
 </p>
 
 # 🔄 InverseCC Bot
 
-## 🤖 The Contrarian Trading Bot  
-**"Buy when there's blood in the streets – even if the blood is on Reddit."**
+**Contrarian trading bot that buys crypto when Reddit sentiment is strongly negative.**
 
-InverseCC monitors **r/CryptoCurrency** and **r/wallstreetbets** in real time, detects **strongly negative sentiment** using VADER, and instantly places a **market buy order** on Binance (testnet by default). It automates the classic Buffett maxim: *"Be fearful when others are greedy, and greedy when others are fearful."*
+> *"Be fearful when others are greedy, and greedy when others are fearful."* – Warren Buffett  
+> This bot automates the second part.
 
 ---
 
 ## 📖 Table of Contents
-- [🧠 How It Works](#-how-it-works)
-- [📊 Example Run](#-example-run)
-- [⚙️ Setup (5 minutes)](#️-setup-5-minutes)
-- [🔧 Configuration](#-configuration)
-- [📁 Project Structure](#-project-structure)
-- [🚀 Roadmap](#-roadmap)
-- [⚠️ Disclaimer](#-disclaimer)
+
+- [What does it do?](#what-does-it-do)
+- [How it works (flowchart)](#how-it-works-flowchart)
+- [Installation](#installation)
+- [Getting API keys](#getting-api-keys)
+  - [Reddit API](#reddit-api)
+  - [Binance Testnet API](#binance-testnet-api)
+- [Configuration](#configuration)
+- [Running the bot](#running-the-bot)
+- [Example output](#example-output)
+- [Troubleshooting](#troubleshooting)
+- [Project structure](#project-structure)
+- [Disclaimer](#disclaimer)
 
 ---
 
-## 🧠 How It Works
+## What does it do?
+
+The bot continuously monitors **r/CryptoCurrency** and **r/wallstreetbets** for posts/comments that mention `BTC`, `ETH`, `SOL`, or `DOGE`. It analyzes the sentiment of each text using **VADER**. If the sentiment score is **below -0.5** (strongly negative), it immediately places a **market buy order** on Binance (testnet by default) for a fixed amount (e.g., $10).
+
+**Why?** When retail crowds panic, prices often overshoot – buying into extreme fear can be profitable.
+
+---
+
+## How it works (flowchart)
 
 ```mermaid
 flowchart TD
-    A[Start Bot] --> B[Fetch hot posts/comments from r/CryptoCurrency and r/wallstreetbets]
+    A[Start Bot] --> B[Fetch hot posts/comments from Reddit]
     B --> C{Contains BTC, ETH, SOL, or DOGE?}
     C -->|No| B
     C -->|Yes| D[Run VADER sentiment analysis]
     D --> E{Sentiment score < -0.5?}
     E -->|No| B
     E -->|Yes| F[Place market buy order on Binance Testnet]
-    F --> G[Log trade & avoid duplicate buys]
+    F --> G[Log trade & avoid duplicate buys for this session]
     G --> B
